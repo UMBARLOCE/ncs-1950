@@ -2,7 +2,7 @@
 
 ## Предустановка
 
-git clone git@github.com:UMBARLOCE/ncs-color.git
+`git clone git@github.com:UMBARLOCE/ncs-color.git`
 
 cd ncs-color
 
