@@ -18,9 +18,11 @@ pip install -r requirements.txt
 ## Установка
 
 one time
+
 python parsing.py
 
 one time
+
 python generate_jpg.py
 
 ## Запуск
