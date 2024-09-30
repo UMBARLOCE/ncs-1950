@@ -17,7 +17,7 @@ async def process_start_command(message: types.Message):
 @dp.message()
 async def echo_message(message: types.Message):
     text = message.text.upper()
-    page = str(select_page(text))
+    page = select_page(text)
     try:
         await message.reply_photo(
             photo=types.FSInputFile(os.path.join('colors', f'{text}.jpg')),

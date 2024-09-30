@@ -16,7 +16,7 @@ def create_ncs_table():
         m INTEGER,
         y INTEGER,
         k INTEGER,
-        page INTEGER
+        page TEXT
         )""")
     print('Data base connected OK!')
 
