@@ -11,5 +11,4 @@ venv/
 *.session
 *.session-journal
 
-*.db
 colors/
