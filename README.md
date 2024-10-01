@@ -1,4 +1,9 @@
-# aiogram-bot веер-NCS
+# aiogram-bot NCS_1950
+
+База данных уже собрана (`parsing.py`).
+
+Вручную добавлены номера страниц из веера.
+
 
 ## Предустановка
 
@@ -17,11 +22,7 @@
 
 ## Установка
 
-one time
-
-`python parsing.py`
-
-one time
+one time; создание папки с картинками
 
 `python generate_jpg.py`
 
