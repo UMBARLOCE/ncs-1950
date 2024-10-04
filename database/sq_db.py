@@ -3,6 +3,11 @@ import os
 
 
 def create_ncs_table():
+    """Создание БД.
+
+    Используется в модуле parsing.py.
+    Уже не актуально, так как БД залита в git.
+    """
     with sq.connect(os.path.join('database', 'data_base.db')) as con:
         cur = con.cursor()
         cur.execute("""CREATE TABLE IF NOT EXISTS ncs(
@@ -22,6 +27,11 @@ def create_ncs_table():
 
 
 def insert_ncs(*args):
+    """Наполнение БД.
+
+    Используется в модуле parsing.py.
+    Уже не актуально, так как БД залита в git.
+    """
     with sq.connect(os.path.join('database', 'data_base.db')) as con:
         cur = con.cursor()
         cur.execute(
@@ -30,23 +40,48 @@ def insert_ncs(*args):
         )
 
 
-def select_page(ncs: str):
+def select_ncs_page(ncs: str):
+    """Выборка кода цвета и номера страницы по коду цвета.
+    
+    Используется в модуле main.py.
+    Актуально.
+    """
     with sq.connect(os.path.join('database', 'data_base.db')) as con:
         cur = con.cursor()
         query = cur.execute(
-            f"""SELECT page
+            f"""SELECT ncs, page
             FROM ncs
             WHERE ncs LIKE '{ncs}'"""
-        ).fetchone()[0]
+        ).fetchone()
     return query
 
 
-def select_ncs_html() -> list[tuple]:
+# def select_ncs_html() -> list[tuple]:
+#     with sq.connect(os.path.join('database', 'data_base.db')) as con:
+#         cur = con.cursor()
+#         query_list: list[tuple] = cur.execute(
+#             f"""SELECT ncs, html
+#             FROM ncs"""
+#         ).fetchall()
+#     return query_list
+
+
+def select_by_pages(page: str) -> list[tuple]:
     with sq.connect(os.path.join('database', 'data_base.db')) as con:
         cur = con.cursor()
-        query_list: list[tuple] = cur.execute(
-            f"""SELECT ncs, html
-            FROM ncs"""
-        ).fetchall()
-    return query_list
+        query: list[str] = list(
+            cur.execute(
+                f"""
+                SELECT page, ncs
+                FROM ncs
+                """,
+            ).fetchall()
+        )
 
+    res = []
+    for i in query:
+        pages = i[0].split(', ')
+        if page in pages:
+            res.append(i[1])
+
+    return res
