@@ -10,28 +10,44 @@ dp = Dispatcher()
 
 
 @dp.message(CommandStart())
-async def process_start_command(message: types.Message):
+async def process_start_command(message: types.Message) -> None:
     """Хендлер на команду /start."""
-    await message.reply("Введите код цвета NCS.\nНапример, для NCS S 0502-Y50R\nвведите 0502-Y50R")
+    await message.reply(
+        "Введите код цвета\n"
+        "без приставки NCS S\n"
+        "или\n"
+        "Введите номер страницы\n"
+        "1 - 216"
+    )
     await message.delete()
 
-# @dp.message(lambda x: 0 < int(x) < 217)
-# async def echo_message(message: types.Message):
-#     text = message.text.upper()
-#     try:
-#         page = select_by_pages(text)
-#         await message.reply_photo(
-#             photo=types.FSInputFile(os.path.join('colors', f'{text}.jpg')),
-#             caption=page,
-#         )
-#     except Exception as ex:
-#         await message.reply(
-#             text='Некорректный код цвета',
-#         )
+
+@dp.message(lambda message: message.text.isdigit() and 0 < int(message.text) < 217)
+async def process_page(message: types.Message) -> None:
+    """Хендлер на номер страницы веера."""
+    page = message.text
+
+    try:
+        colors: list[str] = select_by_pages(page)
+        for color in colors:
+            await message.reply_photo(
+                photo=types.FSInputFile(os.path.join('colors', f'{color}.jpg')),
+                caption='    '.join((color, page)),
+                disable_notification=True,
+            )
+
+    except Exception:
+        await message.reply(
+            text='Некорректный код цвета',
+        )
+    
+    finally:
+        await message.delete()
 
 
 @dp.message()
-async def echo_message(message: types.Message):
+async def process_ncs(message: types.Message) -> None:
+    """Хендлер на код цвета."""
     text = message.text.upper()
 
     try:
@@ -39,19 +55,22 @@ async def echo_message(message: types.Message):
         await message.reply_photo(
             photo=types.FSInputFile(os.path.join('colors', f'{text}.jpg')),
             caption='    '.join(ncs_page),
+            disable_notification=True,
         )
 
-    except Exception as ex:
+    except Exception:
         await message.reply(
             text='Некорректный код цвета',
         )
     
-    await message.delete()
+    finally:
+        await message.delete()
 
 
-async def main():
+async def main() -> None:
     bot = Bot(token=TOKEN)
     await dp.start_polling(bot)
 
 
-asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(main())

@@ -2,7 +2,7 @@ import sqlite3 as sq
 import os
 
 
-def create_ncs_table():
+def create_ncs_table() -> None:
     """Создание БД.
 
     Используется в модуле parsing.py.
@@ -26,7 +26,7 @@ def create_ncs_table():
     print('Data base connected OK!')
 
 
-def insert_ncs(*args):
+def insert_ncs(*args) -> None:
     """Наполнение БД.
 
     Используется в модуле parsing.py.
@@ -36,11 +36,11 @@ def insert_ncs(*args):
         cur = con.cursor()
         cur.execute(
             "INSERT INTO ncs VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)",
-            (args)
+            (args),
         )
 
 
-def select_ncs_page(ncs: str):
+def select_ncs_page(ncs: str) -> tuple[str]:
     """Выборка кода цвета и номера страницы по коду цвета.
     
     Используется в модуле main.py.
@@ -56,17 +56,12 @@ def select_ncs_page(ncs: str):
     return query
 
 
-# def select_ncs_html() -> list[tuple]:
-#     with sq.connect(os.path.join('database', 'data_base.db')) as con:
-#         cur = con.cursor()
-#         query_list: list[tuple] = cur.execute(
-#             f"""SELECT ncs, html
-#             FROM ncs"""
-#         ).fetchall()
-#     return query_list
-
-
-def select_by_pages(page: str) -> list[tuple]:
+def select_by_pages(page: str) -> list[str]:
+    """Выборка кодов цвета на странице по номеру страницы.
+    
+    Используется в модуле main.py.
+    Актуально.
+    """
     with sq.connect(os.path.join('database', 'data_base.db')) as con:
         cur = con.cursor()
         query: list[str] = list(
