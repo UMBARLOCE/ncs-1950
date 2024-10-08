@@ -26,7 +26,7 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
         if chat_member.status == 'left':
             keyboard = InlineKeyboardMarkup(
                 inline_keyboard=[
-                    [InlineKeyboardButton(text="Подписаться", url=f"https://t.me/{self.channel_name}")]
+                    [InlineKeyboardButton(text="Подписаться", url=f"https://t.me/{self.channel_name}")],
                 ]
             )
             answer_text = """Чтобы пользоваться ботом, 
@@ -34,5 +34,6 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
 агрегатор новостей в мире декоративных материалов"""
 
             await event.answer(text=answer_text, reply_markup=keyboard)
+            await event.answer(text="Уже подписались?\nНажмите /start")
         else:
             return await handler(event, data)
