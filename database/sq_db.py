@@ -40,6 +40,21 @@ def insert_ncs(*args) -> None:
         )
 
 
+def select_ncs_html() -> list[tuple]:
+    """Выборка кодов по ncs и html.
+    
+    Используется в модуле generate_jpg.py.
+    Актуально.
+    """
+    with sq.connect(os.path.join('database', 'data_base.db')) as con:
+        cur = con.cursor()
+        query_list: list[tuple] = cur.execute(
+            f"""SELECT ncs, html
+            FROM ncs"""
+        ).fetchall()
+    return query_list
+
+
 def select_ncs_code_and_page_number_by_ncs_code(ncs: str) -> tuple[str]:
     """Выборка кода цвета и номера страницы по коду цвета.
     
