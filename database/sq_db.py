@@ -40,7 +40,7 @@ def insert_ncs(*args) -> None:
         )
 
 
-def select_ncs_page(ncs: str) -> tuple[str]:
+def select_ncs_code_and_page_number_by_ncs_code(ncs: str) -> tuple[str]:
     """Выборка кода цвета и номера страницы по коду цвета.
     
     Используется в модуле main.py.
@@ -56,7 +56,7 @@ def select_ncs_page(ncs: str) -> tuple[str]:
     return query
 
 
-def select_by_pages(page: str) -> list[str]:
+def select_ncs_codes_by_page_number(page: str) -> list[str]:
     """Выборка кодов цвета на странице по номеру страницы.
     
     Используется в модуле main.py.
@@ -74,6 +74,7 @@ def select_by_pages(page: str) -> list[str]:
         )
 
     res = []
+    # i: ('21, 33', '2005-G80Y')
     for i in query:
         pages = i[0].split(', ')
         if page in pages:

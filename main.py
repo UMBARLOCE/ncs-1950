@@ -1,74 +1,79 @@
-from aiogram import Bot, types, Dispatcher
-import asyncio
+from aiogram import types
 from aiogram.filters import CommandStart
+from aiogram.methods import DeleteWebhook
+import asyncio
 import os
-from database.sq_db import select_ncs_page, select_by_pages
-from config import TOKEN
-
-
-dp = Dispatcher()
+from database.sq_db import (
+    select_ncs_code_and_page_number_by_ncs_code,
+    select_ncs_codes_by_page_number,
+)
+from loader import dp, bot
+from config import main_channel_name
+from middleware import CheckSubscriptionMiddleware
 
 
 @dp.message(CommandStart())
-async def process_start_command(message: types.Message) -> None:
+async def start_command(message: types.Message) -> None:
     """Хендлер на команду /start."""
-    await message.reply(
-        "Введите код цвета\n"
-        "без приставки NCS S\n"
-        "или\n"
-        "Введите номер страницы\n"
-        "1 - 216"
-    )
-    await message.delete()
+
+    try:
+        await message.answer(
+            "Введите код цвета без приставки NCS S (например 0570-Y80R)\n"
+            "или\n"
+            "введите номер страницы веера NCS index 1950 с 1 по 216"
+        )
+
+    except Exception:
+        await message.answer('Неверный формат запроса')
+    
+    finally:
+        await message.delete()
 
 
 @dp.message(lambda message: message.text.isdigit() and 0 < int(message.text) < 217)
-async def process_page(message: types.Message) -> None:
+async def find_colors_by_page_number(message: types.Message) -> None:
     """Хендлер на номер страницы веера."""
-    page = message.text
+    page_number: str = message.text
 
     try:
-        colors: list[str] = select_by_pages(page)
+        colors: list[str] = select_ncs_codes_by_page_number(page_number)
         for color in colors:
             await message.reply_photo(
                 photo=types.FSInputFile(os.path.join('colors', f'{color}.jpg')),
-                caption='    '.join((color, page)),
+                caption='    '.join((color, page_number)),
                 disable_notification=True,
             )
 
     except Exception:
-        await message.reply(
-            text='Некорректный код цвета',
-        )
+        await message.answer('Неверный формат запроса')
     
     finally:
         await message.delete()
 
 
 @dp.message()
-async def process_ncs(message: types.Message) -> None:
+async def find_color_by_ncs_code(message: types.Message) -> None:
     """Хендлер на код цвета."""
-    text = message.text.upper()
+    ncs_code: str = message.text.upper()
 
     try:
-        ncs_page = select_ncs_page(text)
+        ncs_page = select_ncs_code_and_page_number_by_ncs_code(ncs_code)
         await message.reply_photo(
-            photo=types.FSInputFile(os.path.join('colors', f'{text}.jpg')),
+            photo=types.FSInputFile(os.path.join('colors', f'{ncs_code}.jpg')),
             caption='    '.join(ncs_page),
             disable_notification=True,
         )
 
     except Exception:
-        await message.reply(
-            text='Некорректный код цвета',
-        )
+        await message.answer('Неверный формат запроса')
     
     finally:
         await message.delete()
 
 
 async def main() -> None:
-    bot = Bot(token=TOKEN)
+    dp.message.middleware(CheckSubscriptionMiddleware(main_channel_name))
+    await bot(DeleteWebhook(drop_pending_updates=True))
     await dp.start_polling(bot)
 
 
