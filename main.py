@@ -1,14 +1,11 @@
-from aiogram import types
+from aiogram import types, F
 from aiogram.filters import CommandStart
 from aiogram.methods import DeleteWebhook
 import asyncio
 import os
-from database.sq_db import (
-    select_ncs_code_and_page_number_by_ncs_code,
-    select_ncs_codes_by_page_number,
-)
-from loader import dp, bot
-from config import main_channel_name
+from database import select_ncs_and_pages_by_ncs, select_ncs_and_pages_by_page
+from utils.loader import dp, bot
+from utils.config import main_channel_name
 from middleware import CheckSubscriptionMiddleware
 
 
@@ -30,17 +27,28 @@ async def start_command(message: types.Message) -> None:
         await message.delete()
 
 
-@dp.message(lambda message: message.text.isdigit() and 0 < int(message.text) < 217)
-async def find_colors_by_page_number(message: types.Message) -> None:
+@dp.callback_query(F.data == 'already_subscribed')
+async def sub_data(callback: types.CallbackQuery) -> None:
+    """Хендлер на команду /start."""
+
+    await callback.message.answer(
+        "Введите код цвета без приставки NCS S (например 0570-Y80R)\n"
+        "или\n"
+        "введите номер страницы веера NCS index 1950 с 1 по 216"
+    )
+    await callback.answer()
+
+
+@dp.message(lambda message: message.text and message.text.isdigit() and 0 < int(message.text) < 217)
+async def answer_ncs_and_pages_by_page(message: types.Message) -> None:
     """Хендлер на номер страницы веера."""
-    page_number: str = message.text
 
     try:
-        colors: list[str] = select_ncs_codes_by_page_number(page_number)
-        for color in colors:
+        list_of_ncs_pages = select_ncs_and_pages_by_page(message.text.upper())
+        for ncs, pages in list_of_ncs_pages:
             await message.reply_photo(
-                photo=types.FSInputFile(os.path.join('colors', f'{color}.jpg')),
-                caption='    '.join((color, page_number)),
+                photo=types.FSInputFile(os.path.join('colors', f'{ncs}.jpg')),
+                caption='    '.join((ncs, pages)),
                 disable_notification=True,
             )
 
@@ -52,15 +60,14 @@ async def find_colors_by_page_number(message: types.Message) -> None:
 
 
 @dp.message()
-async def find_color_by_ncs_code(message: types.Message) -> None:
+async def answer_ncs_and_pages_by_ncs(message: types.Message) -> None:
     """Хендлер на код цвета."""
-    ncs_code: str = message.text.upper()
 
     try:
-        ncs_page = select_ncs_code_and_page_number_by_ncs_code(ncs_code)
+        ncs, pages = select_ncs_and_pages_by_ncs(message.text.upper())
         await message.reply_photo(
-            photo=types.FSInputFile(os.path.join('colors', f'{ncs_code}.jpg')),
-            caption='    '.join(ncs_page),
+            photo=types.FSInputFile(os.path.join('colors', f'{ncs}.jpg')),
+            caption='    '.join((ncs, pages)),
             disable_notification=True,
         )
 

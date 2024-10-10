@@ -1,5 +1,5 @@
 from aiogram import Bot, Dispatcher
-from config import TOKEN
+from utils.config import TOKEN
 
 
 bot = Bot(token=TOKEN)

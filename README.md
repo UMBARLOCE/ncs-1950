@@ -7,13 +7,13 @@
 
 # Предустановка
 
-`git clone git@github.com:UMBARLOCE/ncs-color.git`
+`git clone https://github.com/UMBARLOCE/ncs-1950.git`
 
-`cd ncs-color`
+`cd ncs-1950`
 
-`python3 -m venv venv`
+`python3 -m venv .venv`
 
-`source venv/bin/activate`
+`source .venv/bin/activate`
 
 `pip install --upgrade pip`
 
@@ -24,7 +24,7 @@
 
 one time; создание папки с картинками
 
-`python generate_jpg.py`
+`python _generate_jpg.py`
 
 
 # Запуск
@@ -60,14 +60,23 @@ one time; создание папки с картинками
 
 00. Автоудаление запросов.
 
-00. Привязка бота к каналу `-1002116264777`.
+00. Привязка бота к телеграм-каналу.
+
+00. Деплой бота на сервер.
+
+00. Автозагрузка бота через systemd.
+
 
 # TODO
+
 
 00. Спарсить сайт `https://www.market-krasok.ru/help/colors/` - 4 картинки интерьера на цвет.
 
 00. В хендлере по коду цвета к картинке с фоном добавить кнопку для выгрузки примеров с интерьером.
 
-00. Деплой бота на сервер (123456).
+00. АЛЬТЕРНАТИВА: инлайн-кнопка с url на данный цвет.
 
-00. Автозагрузка бота через systemd.
+
+# REFACTORING
+
+00. папку colors спрятать в дерево

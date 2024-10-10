@@ -2,7 +2,7 @@ import sqlite3 as sq
 import os
 
 
-def create_ncs_table() -> None:
+def create_db_and_ncs_table() -> None:
     """Создание БД.
 
     Используется в модуле parsing.py.
@@ -23,10 +23,9 @@ def create_ncs_table() -> None:
         k INTEGER,
         page TEXT
         )""")
-    print('Data base connected OK!')
 
 
-def insert_ncs(*args) -> None:
+def insert_into_ncs_table(*args) -> None:
     """Наполнение БД.
 
     Используется в модуле parsing.py.
@@ -40,7 +39,7 @@ def insert_ncs(*args) -> None:
         )
 
 
-def select_ncs_html() -> list[tuple]:
+def select_all_ncs_and_html() -> list[tuple]:
     """Выборка кодов по ncs и html.
     
     Используется в модуле generate_jpg.py.
@@ -55,7 +54,7 @@ def select_ncs_html() -> list[tuple]:
     return query_list
 
 
-def select_ncs_code_and_page_number_by_ncs_code(ncs: str) -> tuple[str]:
+def select_ncs_and_pages_by_ncs(ncs: str) -> tuple[str]:
     """Выборка кода цвета и номера страницы по коду цвета.
     
     Используется в модуле main.py.
@@ -68,10 +67,11 @@ def select_ncs_code_and_page_number_by_ncs_code(ncs: str) -> tuple[str]:
             FROM ncs
             WHERE ncs LIKE '{ncs}'"""
         ).fetchone()
-    return query
+
+    return query  # ('0502-Y', '3, 7, 22')
 
 
-def select_ncs_codes_by_page_number(page: str) -> list[str]:
+def select_ncs_and_pages_by_page(page: str) -> list[tuple]:
     """Выборка кодов цвета на странице по номеру страницы.
     
     Используется в модуле main.py.
@@ -82,17 +82,11 @@ def select_ncs_codes_by_page_number(page: str) -> list[str]:
         query: list[str] = list(
             cur.execute(
                 f"""
-                SELECT page, ncs
+                SELECT ncs, page
                 FROM ncs
                 """,
             ).fetchall()
         )
 
-    res = []
-    # i: ('21, 33', '2005-G80Y')
-    for i in query:
-        pages = i[0].split(', ')
-        if page in pages:
-            res.append(i[1])
-
-    return res
+    res = [i for i in query if page in i[1].split(', ')]
+    return res  # [('0502-Y', '3, 7, 22'), ('0502-Y50R', '3'), ... ]

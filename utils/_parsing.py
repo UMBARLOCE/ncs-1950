@@ -1,9 +1,12 @@
+# создание БД и ее наполнение с сайта.
+# БД с номерами страниц уже в git. Парсинг не требуется.
+
 import requests
 from bs4 import BeautifulSoup
-from database.sq_db import create_ncs_table, insert_ncs
+from database import create_db_and_ncs_table, insert_into_ncs_table
 
 
-create_ncs_table()
+create_db_and_ncs_table()
 
 for i in range(1, 21):
     url = f'https://colorscheme.ru/ncs-colors-{i}.html'
@@ -27,4 +30,4 @@ for i in range(1, 21):
         y = int(td_s[4].text)
         k = int(td_s[5].text)
 
-        insert_ncs(ncs, html, r, g, b, c, m, y, k)
+        insert_into_ncs_table(ncs, html, r, g, b, c, m, y, k)

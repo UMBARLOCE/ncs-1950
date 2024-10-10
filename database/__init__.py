@@ -1,1 +1,1 @@
-from . import sq_db
+from .sq_db import *

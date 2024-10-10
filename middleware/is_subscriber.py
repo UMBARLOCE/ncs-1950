@@ -27,6 +27,7 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
             keyboard = InlineKeyboardMarkup(
                 inline_keyboard=[
                     [InlineKeyboardButton(text="Подписаться", url=f"https://t.me/{self.channel_name}")],
+                    [InlineKeyboardButton(text="Уже подписался", callback_data='already_subscribed')],
                 ]
             )
             answer_text = """Чтобы пользоваться ботом, 
@@ -34,6 +35,7 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
 агрегатор новостей в мире декоративных материалов"""
 
             await event.answer(text=answer_text, reply_markup=keyboard)
-            await event.answer(text="Уже подписались?\nНажмите /start")
+            await event.delete()
+            # await event.answer(text="Уже подписались?\nНажмите /start")
         else:
             return await handler(event, data)

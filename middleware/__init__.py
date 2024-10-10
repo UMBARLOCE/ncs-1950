@@ -1,1 +1,1 @@
-from .is_subscriber import CheckSubscriptionMiddleware
+from .is_subscriber import *
