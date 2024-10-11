@@ -1,12 +1,15 @@
+import asyncio
+import os
+
 from aiogram import types, F
 from aiogram.filters import CommandStart
 from aiogram.methods import DeleteWebhook
-import asyncio
-import os
+
 from database import select_ncs_and_pages_by_ncs, select_ncs_and_pages_by_page
+from keyboard.inline import get_ikb_examples_ncs
+from middleware import CheckSubscriptionMiddleware
 from utils.loader import dp, bot
 from utils.config import main_channel_name
-from middleware import CheckSubscriptionMiddleware
 
 
 @dp.message(CommandStart())
@@ -50,6 +53,7 @@ async def answer_ncs_and_pages_by_page(message: types.Message) -> None:
                 photo=types.FSInputFile(os.path.join('colors', f'{ncs}.jpg')),
                 caption='    '.join((ncs, pages)),
                 disable_notification=True,
+                reply_markup=get_ikb_examples_ncs(ncs),
             )
 
     except Exception:
@@ -69,6 +73,7 @@ async def answer_ncs_and_pages_by_ncs(message: types.Message) -> None:
             photo=types.FSInputFile(os.path.join('colors', f'{ncs}.jpg')),
             caption='    '.join((ncs, pages)),
             disable_notification=True,
+            reply_markup=get_ikb_examples_ncs(ncs),
         )
 
     except Exception:

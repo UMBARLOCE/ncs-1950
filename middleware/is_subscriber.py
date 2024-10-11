@@ -27,12 +27,12 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
             keyboard = InlineKeyboardMarkup(
                 inline_keyboard=[
                     [InlineKeyboardButton(text="Подписаться", url=f"https://t.me/{self.channel_name}")],
-                    [InlineKeyboardButton(text="Уже подписался", callback_data='already_subscribed')],
+                    [InlineKeyboardButton(text="Уже подписался", callback_data='already_subscribed')],  #
                 ]
             )
             answer_text = """Чтобы пользоваться ботом, 
-подпишитесь на наш канал - 
-агрегатор новостей в мире декоративных материалов"""
+        подпишитесь на наш канал - 
+        агрегатор новостей в мире декоративных материалов"""
 
             await event.answer(text=answer_text, reply_markup=keyboard)
             await event.delete()
