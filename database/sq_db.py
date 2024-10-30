@@ -71,6 +71,28 @@ def select_ncs_and_pages_by_ncs(ncs: str) -> tuple[str]:
     return query  # ('0502-Y', '3, 7, 22')
 
 
+def select_ncs_whiteness(ncs: str) -> list[str]:
+    """
+    """
+    with sq.connect(os.path.join('database', 'data_base.db')) as con:
+        cur = con.cursor()
+        query: list[tuple[str]] = list(
+            cur.execute(
+                f"""
+                SELECT ncs
+                FROM ncs
+                """,
+            ).fetchall()
+        )
+
+    whiteness_list = [i[0] for i in query if ncs[2:] == i[0][2:]]
+    whiteness_list.sort()
+    ind = whiteness_list.index(ncs)
+    left = whiteness_list[ind - 1] if ncs != whiteness_list[0] else None
+    right = whiteness_list[ind + 1] if ncs != whiteness_list[-1] else None
+    return left, right
+
+
 def select_ncs_and_pages_by_page(page: str) -> list[tuple]:
     """Выборка кодов цвета на странице по номеру страницы.
     
