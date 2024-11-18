@@ -6,7 +6,7 @@ from typing import Callable, Dict, Any, Awaitable
 
 class CheckSubscriptionMiddleware(BaseMiddleware):
     """
-    Этот middleware будет проверять подписку пользователя
+    Этот middleware проверяет подписку пользователя
     на указанный канал перед обработкой любого сообщения.
     Если пользователь не подписан, он получит сообщение
     с просьбой подписаться и кнопкой для перехода в канал.

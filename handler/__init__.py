@@ -1,2 +1,3 @@
-from . import message
 from . import callback
+from . import command
+from . import message
