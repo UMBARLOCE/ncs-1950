@@ -21,12 +21,12 @@ async def set_menu(bot: Bot):
 
         types.BotCommand(
             command='/about',
-            description='о нас'
+            description='о NCS'
         ),
 
         types.BotCommand(
             command='/help',
-            description='помощь'
+            description='описание'
         ),
 
     ]

@@ -34,7 +34,7 @@ def get_ikb_examples_ncs(ncs: str) -> InlineKeyboardMarkup:
                 ),
 
                 InlineKeyboardButton(
-                    text="ТОН",
+                    text="тон",
                     callback_data='bad',
                 ),
 
@@ -51,7 +51,7 @@ def get_ikb_examples_ncs(ncs: str) -> InlineKeyboardMarkup:
                 ),
 
                 InlineKeyboardButton(
-                    text="ЯРКОСТЬ",
+                    text="цветность",
                     callback_data='bad',
                 ),
 
@@ -68,7 +68,7 @@ def get_ikb_examples_ncs(ncs: str) -> InlineKeyboardMarkup:
                 ),
 
                 InlineKeyboardButton(
-                    text="ОТТЕНОК",
+                    text="оттенок",
                     callback_data='bad',
                 ),
 

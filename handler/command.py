@@ -72,7 +72,7 @@ async def command_about(message: types.Message) -> None:
 
     try:
         await message.answer(
-            text="Тут текст О НАС",
+            text="https://materiale.ru/1490",
             disable_notification=True,
             )
 
@@ -89,7 +89,7 @@ async def command_help(message: types.Message) -> None:
 
     try:
         await message.answer(
-            text="Тут текст ПОМОЩЬ",
+            text="Тут текст ОПИСАНИЕ",
             # reply_markup=types.ReplyKeyboardRemove(),
             disable_notification=True,
             )
