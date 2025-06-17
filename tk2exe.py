@@ -1,59 +1,57 @@
-"""
-Десктоп приложение для поиска цветов NCS.
-"""
+"""Десктоп приложение для поиска страницы в веере NCS_1950."""
 
 import tkinter as tk
 import sqlite3
 
 
-def search_suggestions(event=None):
-    """
-    Выполняет поиск по базе данных и обновляет список предложений.
-    """
-    search_term = entry.get()
+def search_in_db(event) -> None:
+    """Выполняет поиск по базе данных и обновляет список предложений."""
+    search_term: str = entry.get()
+
     cursor.execute(
         "SELECT ncs, page FROM ncs WHERE ncs LIKE ?", ("%" + search_term + "%",)
     )
-    results = cursor.fetchall()
+    results: list[tuple[str, str]] = cursor.fetchall()
 
     listbox.delete(0, tk.END)
     for row in results:
-        listbox.insert(tk.END, "\t\t".join(row))
+        listbox.insert(tk.END, row[0].ljust(12, "_") + row[1])
 
 
-def select_suggestion(event):
-    """
-    Обрабатывает выбор элемента из списка и вставляет его в поле ввода.
-    """
-    try:
-        selected_index = listbox.curselection()[0]
-        selected_suggestion = listbox.get(selected_index)
-        entry.delete(0, tk.END)
-        entry.insert(0, selected_suggestion)
-        listbox.delete(0, tk.END)  # Очистка списка после выбора
-    except IndexError:
-        pass  # Ничего не выбрано
+def select_in_listbox(event) -> None:
+    """Очищает listbox и поле entry при клике по listbox."""
+    listbox.delete(0, tk.END)
+    entry.delete(0, tk.END)
 
 
-# Создание главного окна
-root = tk.Tk()
-root.title("NCS_1950")
+def set_entry_focus(event) -> None:
+    """Ставит курсор в поле entry."""
+    entry.focus_set()
 
-# Поле ввода
-entry = tk.Entry(root)
+
+root = tk.Tk()  # создание главного окна
+root.overrideredirect(False)  # включение/выключение рамки главного окна
+root.title("NCS_1950")  # надпись в заголовке окна
+root.resizable(False, False)  # запрет на изменение размеров окна
+root.attributes("-topmost", True)  #  поверх всех окон
+root.geometry("300x300+0+0")  #  размер и положение главного окна
+root.option_add("*Font", ("Helvetica", 18))  # тип и размер шрифта глобально
+root.bind("<FocusIn>", set_entry_focus)  # при активном окне курсор в поле entry
+
+
+entry = tk.Entry(root, width=30)
 entry.pack()
-entry.bind("<KeyRelease>", search_suggestions)
+entry.bind("<KeyRelease>", search_in_db)
 
-# Список предложений
-listbox = tk.Listbox(root)
+
+listbox = tk.Listbox(root, width=30, height=15)
 listbox.pack()
-listbox.bind("<<ListboxSelect>>", select_suggestion)
+listbox.bind("<<ListboxSelect>>", select_in_listbox)
 
-# Подключение к базе данных SQLite3
+
 conn = sqlite3.connect("./db.db")
 cursor = conn.cursor()
 
-root.mainloop()
 
-# Закрытие соединения с базой данных при закрытии окна
+root.mainloop()
 conn.close()
